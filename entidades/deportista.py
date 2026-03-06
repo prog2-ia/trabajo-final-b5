@@ -1,7 +1,7 @@
 class Deportista:
-    def __init__(self, nombre, grupo_muscular, altura):
+    def __init__(self, nombre, peso, altura):
         self.nombre = nombre
-        self.grupo_muscular = grupo_muscular
+        self.peso = peso
         self.altura = altura
 
 
