@@ -14,7 +14,7 @@ class Entrenamiento(ABC):
     @duracion.setter
     def duracion(self,valor: int):
         if valor <= 0:
-            print(f"La duración debe ser mayor que 0")
+            raise print(f"La duración debe ser mayor que 0")
         self._duracion = valor
     @abstractmethod
     def calcular_rendimiento(self):

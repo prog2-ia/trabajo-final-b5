@@ -1,5 +1,5 @@
 class MediaCorporal:
     def __init__(self, fecha, grasa, peso):
-        self.fecha=fecha
-        self.grasa=grasa
-        self.peso=peso
+        self._fecha=fecha
+        self._grasa=grasa
+        self._peso=peso
