@@ -11,5 +11,5 @@ class Deportista:
     @peso.setter
     def peso(self, valor: float):
         if valor <= 0:
-            raise ValueError("El peso debe ser positivo") # Uso de excepciones [cite: 536]
+            raise ValueError("El peso debe ser positivo")
         self._peso = valor
