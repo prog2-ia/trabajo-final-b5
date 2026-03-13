@@ -1,11 +1,15 @@
 class Deportista:
-    def __init__(self, nombre, peso, altura):
+    def __init__(self, nombre: str, peso: float, altura: float):
         self.nombre = nombre
-        self.peso = peso
-        self.altura = altura
+        self._peso = peso
+        self._altura = altura
 
+    @property
+    def peso(self) -> float:
+        return self._peso
 
-    def calcular_imc(self):
-        pass
-
-
+    @peso.setter
+    def peso(self, valor: float):
+        if valor <= 0:
+            raise ValueError("El peso debe ser positivo") # Uso de excepciones [cite: 536]
+        self._peso = valor
