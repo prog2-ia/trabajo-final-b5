@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from datetime import date
 
 class Entrenamiento(ABC):
     def __init__(self, fecha, duracion: int, id_entreno: int):
