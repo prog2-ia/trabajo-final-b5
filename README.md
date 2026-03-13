@@ -4,7 +4,7 @@
 ## Descripción del Proyecto
 Este proyecto es una aplicación de consola desarrollada en Python para la asignatura de **Programación II** del Grado en IA en la **Universidad de Alicante**. Su objetivo es permitir a deportistas registrar sus entrenamientos (Fuerza y Cardio), realizar un seguimiento de sus medidas corporales y visualizar su progreso hacia metas específicas.
 
-## 👥 Integrantes del Equipo
+## Integrantes del Equipo
 * **Integrante 1**: Óscar Marco Albertos
 * **Integrante 2**: Miguel Vicente Mollá
 * **Grupo**: B5
