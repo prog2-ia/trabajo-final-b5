@@ -13,3 +13,4 @@ class Deportista:
         if valor <= 0:
             raise ValueError("El peso debe ser positivo")
         self._peso = valor
+
