@@ -1,13 +1,13 @@
 from datetime import date
-from entidades.deportista import Deportista
-from entidades.ejercicio import Ejercicio
-from entidades.entrenamiento import EntrenamientoFuerza, EntrenamientoCardio
-from entidades.mediapersonal import MediaCorporal
-from entidades.objetivo import Objetivo
-from entidades.plansemanal import PlanSemanal
-from entidades.recordpersonal import RecordPersonal
-from entidades.ritmo import Ritmo
-from entidades.serie import Serie
+from src.entidades.deportista import Deportista
+from src.entidades.ejercicio import Ejercicio
+from src.entidades.entrenamiento import EntrenamientoFuerza, EntrenamientoCardio
+from src.entidades.mediapersonal import MediaCorporal
+from src.entidades.objetivo import Objetivo
+from src.entidades.plansemanal import PlanSemanal
+from src.entidades.recordpersonal import RecordPersonal
+from src.entidades.ritmo import Ritmo
+from src.entidades.serie import Serie
 
 print("--- EJECUTANDO PRUEBA DE ENTIDADES (GRUPO B5) ---")
 
