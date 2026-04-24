@@ -1,4 +1,4 @@
-from entidades.ejercicio import Ejercicio
+from src.entidades.ejercicio import Ejercicio
 
 class RecordPersonal:
     def __init__(self, ejercicio: Ejercicio, mejor_marca: float):
