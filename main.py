@@ -1,197 +1,264 @@
 import customtkinter as ctk
 from datetime import date
+from tkinter import messagebox
+
+# Importación de arquitectura de capas
 from src.servicios.gestion_atletas import GestionAtletas
 from src.servicios.gestion_entrenamientos import GestionEntrenamientos
 from src.entidades.entrenamiento import EntrenamientoFuerza, EntrenamientoCardio
+from src.entidades.plansemanal import PlanSemanal
+from src.entidades.serie import Serie
 from src.entidades.ritmo import Ritmo
+from src.entidades.objetivo import Objetivo
+from src.entidades.mediapersonal import MediaCorporal
+from src.entidades.recordpersonal import RecordPersonal
 
 
-# --- CONFIGURACIÓN GLOBAL DE LA UI ---
-ctk.set_appearance_mode("dark")  # Modo oscuro por defecto
-ctk.set_default_color_theme("blue")  # Tema de color principal
-
-
-class AppGestionDeportiva(ctk.CTk):
+class AppFitnessPro_UA(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        # 1. Inicialización de Servicios y Carga de Persistencia
+        # Servicios
         self.atletismo = GestionAtletas()
         self.gym = GestionEntrenamientos()
-
-        # Cargamos los datos guardados en los archivos .pkl al iniciar
         self.atletismo.cargar_estado()
         self.gym.cargar_estado()
 
-        # 2. Configuración de la Ventana Principal
-        self.title("Gestor de Rendimiento B5 - Universidad de Alicante")
-        self.geometry("700x750")
+        self.title("UA Fitness Management System - Grupo B5")
+        self.geometry("1400x950")
+        self.atleta_actual = None
 
-        # Protocolo de cierre: Guarda datos automáticamente al pulsar la 'X'
-        self.protocol("WM_DELETE_WINDOW", self.finalizar_y_guardar)
+        # Layout Principal
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
-        # 3. Diseño de la Interfaz (Layout)
-        self.label_header = ctk.CTkLabel(self, text="SISTEMA DE GESTIÓN DEPORTIVA", font=("Arial", 24, "bold"))
-        self.label_header.pack(pady=20)
+        self._setup_sidebar()
+        self.main_container = ctk.CTkFrame(self, fg_color="transparent")
+        self.main_container.grid(row=0, column=1, sticky="nsew", padx=25, pady=25)
 
-        # Sistema de Pestañas (Equivalente al Menú de Consola)
-        self.tabs = ctk.CTkTabview(self)
-        self.tabs.pack(fill="both", expand=True, padx=20, pady=10)
+        self.navegar("directorio")
 
-        self.tab_atleta = self.tabs.add("👤 Registrar Atleta")
-        self.tab_entreno = self.tabs.add("🏋️ Registrar Entreno")
-        self.tab_resumen = self.tabs.add("📊 Resumen e IMC")
+    def _setup_sidebar(self):
+        sidebar = ctk.CTkFrame(self, width=240, corner_radius=0)
+        sidebar.grid(row=0, column=0, sticky="nsew")
 
-        # Configuración de cada sección
-        self.crear_interfaz_atleta()
-        self.crear_interfaz_entrenamiento()
-        self.crear_interfaz_resumen()
+        ctk.CTkLabel(sidebar, text="UA FITNESS PRO", font=("Impact", 28)).pack(pady=40)
+
+        ctk.CTkButton(sidebar, text="👥 Directorio General", command=lambda: self.navegar("directorio")).pack(pady=10,
+                                                                                                             padx=20,
+                                                                                                             fill="x")
+        ctk.CTkButton(sidebar, text="🏆 Ranking de Élite", fg_color="#D4AC0D", text_color="black",
+                      command=lambda: self.navegar("ranking")).pack(pady=10, padx=20, fill="x")
+
+        ctk.CTkButton(sidebar, text="📥 Sincronizar Datos", fg_color="#2E4053", command=self.guardar_datos).pack(
+            side="bottom", pady=30, padx=20, fill="x")
+
+    def navegar(self, vista):
+        for widget in self.main_container.winfo_children(): widget.destroy()
+        if vista == "directorio":
+            self.render_directorio()
+        elif vista == "expediente":
+            self.render_expediente()
+        elif vista == "ranking":
+            self.render_ranking()
 
     # ==========================================
-    # SECCIÓN: REGISTRO DE ATLETAS (Opción 1)
+    # 1. DIRECTORIO (LISTA DE ATLETAS)
     # ==========================================
-    def crear_interfaz_atleta(self):
-        ctk.CTkLabel(self.tab_atleta, text="Datos del Deportista", font=("Arial", 18, "bold")).pack(pady=15)
+    def render_directorio(self):
+        ctk.CTkLabel(self.main_container, text="CENTRO DE MANDO DE DEPORTISTAS", font=("Arial", 24, "bold")).pack(
+            pady=15)
 
-        self.entry_nom = ctk.CTkEntry(self.tab_atleta, placeholder_text="Nombre Completo", width=350)
-        self.entry_nom.pack(pady=10)
+        f_alta = ctk.CTkFrame(self.main_container)
+        f_alta.pack(fill="x", pady=10)
+        self.ent_n = ctk.CTkEntry(f_alta, placeholder_text="Nombre del nuevo prospecto...", width=300)
+        self.ent_n.pack(side="left", padx=20, pady=20)
+        ctk.CTkButton(f_alta, text="Registrar en la Academia", command=self.registrar_atleta).pack(side="left")
 
-        self.entry_peso = ctk.CTkEntry(self.tab_atleta, placeholder_text="Peso actual (kg)", width=350)
-        self.entry_peso.pack(pady=10)
+        scroll = ctk.CTkScrollableFrame(self.main_container, label_text="Atletas Bajo Supervisión")
+        scroll.pack(fill="both", expand=True, pady=10)
 
-        self.entry_alt = ctk.CTkEntry(self.tab_atleta, placeholder_text="Altura (m) - Ejemplo: 1.75", width=350)
-        self.entry_alt.pack(pady=10)
+        for a in self.atletismo.obtener_todos():
+            card = ctk.CTkFrame(scroll, border_width=1, border_color="#34495E")
+            card.pack(fill="x", padx=15, pady=8)
+            ctk.CTkLabel(card, text=f"DEPORTISTA: {a._nombre.upper()}", font=("Arial", 14, "bold")).pack(side="left",
+                                                                                                         padx=30,
+                                                                                                         pady=20)
 
-        ctk.CTkButton(self.tab_atleta, text="Registrar en Sistema", command=self.ui_registrar_atleta).pack(pady=20)
+            ctk.CTkButton(card, text="Gestionar Perfil", fg_color="#2980B9",
+                          command=lambda obj=a: self.abrir_expediente(obj)).pack(side="right", padx=10)
+            ctk.CTkButton(card, text="🗑️", width=45, fg_color="#922B21",
+                          command=lambda obj=a: self.eliminar_atleta(obj)).pack(side="right")
 
-        self.lbl_status_atleta = ctk.CTkLabel(self.tab_atleta, text="")
-        self.lbl_status_atleta.pack()
+    # ==========================================
+    # 2. EXPEDIENTE (PERFIL 360º)
+    # ==========================================
+    def render_expediente(self):
+        a = self.atleta_actual
+        ctk.CTkButton(self.main_container, text="← Volver al Centro de Mando", width=120,
+                      command=lambda: self.navegar("directorio")).pack(anchor="w")
 
-    def ui_registrar_atleta(self):
+        # --- HEADER DEL EXPEDIENTE ---
+        header = ctk.CTkFrame(self.main_container, fg_color="#17202A", corner_radius=15)
+        header.pack(fill="x", pady=20)
+
+        ctk.CTkLabel(header, text=f"EXPEDIENTE TÉCNICO: {a._nombre}", font=("Arial", 28, "bold")).pack(side="left",
+                                                                                                       padx=30, pady=25)
+
+        stats_frame = ctk.CTkFrame(header, fg_color="transparent")
+        stats_frame.pack(side="right", padx=30)
+
+        # Info rápida basada en lógica de Atleta
+        ctk.CTkLabel(stats_frame, text=f"IMC: {self.atletismo.calcular_imc_atleta(a)}", font=("Arial", 16, "bold"),
+                     text_color="#27AE60").pack(side="left", padx=15)
+        ctk.CTkLabel(stats_frame, text=f"Peso Inicial: {a._peso}kg", font=("Arial", 12)).pack(side="left", padx=15)
+
+        # --- TABS DE FUNCIONALIDADES ---
+        tabs = ctk.CTkTabview(self.main_container)
+        tabs.pack(fill="both", expand=True)
+
+        t_plan = tabs.add("📅 Planificación")
+        t_logs = tabs.add("🏋️ Diario de Cargas")
+        t_body = tabs.add("📏 Biometría")
+        t_goals = tabs.add("🎯 Récords y Metas")
+
+        self._build_planificador(t_plan)
+        self._build_diario(t_logs)
+        self._build_biometria(t_body)
+        self._build_objetivos(t_goals)
+
+    # --- SUB-MÓDULO: PLANIFICADOR SEMANAL ---
+    def _build_planificador(self, parent):
+        ctk.CTkLabel(parent, text="MATRIZ DE ENTRENAMIENTO SEMANAL", font=("Arial", 16, "bold")).pack(pady=15)
+        grid = ctk.CTkFrame(parent, fg_color="transparent")
+        grid.pack(pady=10)
+
+        dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+        self.controles_plan = {}
+
+        for i, dia in enumerate(dias):
+            col = ctk.CTkFrame(grid, width=160, height=220, border_width=1, border_color="#5D6D7E")
+            col.grid(row=0, column=i, padx=5)
+            col.grid_propagate(False)
+
+            ctk.CTkLabel(col, text=dia, font=("Arial", 13, "bold"), text_color="#AED6F1").pack(pady=10)
+
+            sel = ctk.CTkOptionMenu(col, values=["DESCANSO", "FUERZA", "CARDIO", "HIIT", "MOVILIDAD"], width=130)
+            sel.pack(pady=20)
+            self.controles_plan[dia] = sel
+
+        ctk.CTkButton(parent, text="Sincronizar Calendario de Atleta", fg_color="#1E8449",
+                      command=self.guardar_horario).pack(pady=30)
+
+    # --- SUB-MÓDULO: DIARIO DE CARGAS ---
+    def _build_diario(self, parent):
+        f_registro = ctk.CTkFrame(parent)
+        f_registro.pack(fill="x", padx=30, pady=20)
+
+        ctk.CTkLabel(f_registro, text="Registrar Nueva Serie (Capa de Ejecución)", font=("Arial", 15, "bold")).grid(
+            row=0, column=0, columnspan=2, pady=10)
+        self.e_reps = ctk.CTkEntry(f_registro, placeholder_text="Repeticiones");
+        self.e_reps.grid(row=1, column=0, padx=15, pady=10)
+        self.e_kg = ctk.CTkEntry(f_registro, placeholder_text="Carga en kg");
+        self.e_kg.grid(row=1, column=1, padx=15, pady=10)
+
+        ctk.CTkButton(f_registro, text="Procesar Serie", command=self.log_serie).grid(row=2, column=0, columnspan=2,
+                                                                                      pady=20)
+
+    # --- SUB-MÓDULO: BIOMETRÍA (MediaCorporal) ---
+    def _build_biometria(self, parent):
+        f_med = ctk.CTkFrame(parent)
+        f_med.pack(fill="x", padx=30, pady=20)
+
+        ctk.CTkLabel(f_med, text="Nueva Evolución Corporal", font=("Arial", 15, "bold")).pack(pady=10)
+        self.e_grasa = ctk.CTkEntry(f_med, placeholder_text="% Grasa Corporal");
+        self.e_grasa.pack(pady=5)
+        self.e_peso_act = ctk.CTkEntry(f_med, placeholder_text="Peso Actual (kg)");
+        self.e_peso_act.pack(pady=5)
+
+        ctk.CTkButton(f_med, text="Registrar Evolución", command=self.log_biometria).pack(pady=15)
+
+    # --- SUB-MÓDULO: METAS Y PRs ---
+    def _build_objetivos(self, parent):
+        # Objetivos
+        f_meta = ctk.CTkFrame(parent)
+        f_meta.pack(fill="x", padx=30, pady=10)
+        ctk.CTkLabel(f_meta, text="Fijar Meta de Rendimiento", font=("Arial", 14, "bold")).pack(pady=5)
+        self.e_meta_t = ctk.CTkEntry(f_meta, placeholder_text="Tipo (ej: Fuerza)");
+        self.e_meta_t.pack(side="left", padx=20, pady=10)
+        self.e_meta_v = ctk.CTkEntry(f_meta, placeholder_text="Valor Objetivo");
+        self.e_meta_v.pack(side="left", padx=10)
+        ctk.CTkButton(f_meta, text="Fijar Meta", command=self.log_meta).pack(side="left", padx=10)
+
+    # ==========================================
+    # 3. RANKING (LEADERBOARD DE RENDIMIENTO)
+    # ==========================================
+    def render_ranking(self):
+        ctk.CTkLabel(self.main_container, text="🏆 RANKING DE RENDIMIENTO ACUMULADO", font=("Impact", 35)).pack(pady=30)
+
+        # Lógica: Suma de rendimientos calculados en Entrenamiento
+        ranking = []
+        for a in self.atletismo.obtener_todos():
+            total = sum(s.calcular_rendimiento() for s in self.gym._historial_sesiones)
+            ranking.append((a._nombre, total))
+
+        ranking.sort(key=lambda x: x[1], reverse=True)
+
+        for pos, (nombre, puntos) in enumerate(ranking, 1):
+            f = ctk.CTkFrame(self.main_container, border_width=1, fg_color="#D4AC0D" if pos == 1 else "transparent")
+            f.pack(fill="x", padx=120, pady=6)
+
+            ctk.CTkLabel(f, text=f"{pos}. {nombre.upper()}", font=("Arial", 18, "bold"),
+                         text_color="black" if pos == 1 else "white").pack(side="left", padx=40, pady=15)
+            ctk.CTkLabel(f, text=f"Puntaje de Élite: {puntos:.1f}", font=("Consolas", 16),
+                         text_color="black" if pos == 1 else "white").pack(side="right", padx=40)
+
+    # --- CONTROLADORES ---
+
+    def registrar_atleta(self):
+        if self.ent_n.get():
+            self.atletismo.registrar_atleta(self.ent_n.get(), 80.0, 1.80)
+            self.render_directorio()
+
+    def abrir_expediente(self, atleta):
+        self.atleta_actual = atleta
+        self.navegar("expediente")
+
+    def log_serie(self):
         try:
-            nombre = self.entry_nom.get()
-            peso = float(self.entry_peso.get())
-            altura = float(self.entry_alt.get())
+            s = Serie(int(self.e_reps.get()), float(self.e_kg.get()))
+            vol = s.repeticiones * s._peso
+            ent = EntrenamientoFuerza(date.today().strftime("%Y-%m-%d"), 60, vol, int(self.e_reps.get()), 1)
+            self.gym.registrar_entrenamiento(ent)
+            messagebox.showinfo("Capa de Datos", "Serie integrada en el historial del atleta.")
+        except:
+            pass
 
-            # Llamada al servicio de atletas
-            self.atletismo.registrar_atleta(nombre, peso, altura)
+    def log_biometria(self):
+        m = MediaCorporal(date.today().strftime("%d/%m/%Y"), float(self.e_grasa.get()), float(self.e_peso_act.get()))
+        self.atletismo.añadir_medida(m)
+        messagebox.showinfo("Biometría", "Composición corporal actualizada.")
 
-            self.lbl_status_atleta.configure(text=f"✅ Atleta {nombre} registrado con éxito", text_color="green")
-            self.limpiar_campos_atleta()
-            self.ui_actualizar_resumen()
-        except ValueError:
-            self.lbl_status_atleta.configure(text="❌ Error: Introduce valores numéricos válidos", text_color="red")
+    def log_meta(self):
+        o = Objetivo(self.e_meta_t.get(), float(self.e_meta_v.get()), date.today())
+        self.atletismo.fijar_objetivo(o)
 
-    def limpiar_campos_atleta(self):
-        self.entry_nom.delete(0, 'end')
-        self.entry_peso.delete(0, 'end')
-        self.entry_alt.delete(0, 'end')
+    def guardar_horario(self):
+        dias = list(self.controles_plan.keys())
+        rutinas = [c.get() for c in self.controles_plan.values()]
+        self.gym.programar_semana(dias, rutinas)
+        messagebox.showinfo("Calendario", f"Horario de alto rendimiento sincronizado para {self.atleta_actual._nombre}")
 
-    # ==========================================
-    # SECCIÓN: REGISTRO DE ENTRENOS (Opción 2)
-    # ==========================================
-    def crear_interfaz_entrenamiento(self):
-        ctk.CTkLabel(self.tab_entreno, text="Nueva Sesión de Entrenamiento", font=("Arial", 18, "bold")).pack(pady=10)
+    def eliminar_atleta(self, atleta):
+        if atleta in self.atletismo._atletas:
+            self.atletismo._atletas.remove(atleta)
+            self.render_directorio()
 
-        # Duración común
-        self.entry_dur = ctk.CTkEntry(self.tab_entreno, placeholder_text="Duración (minutos)", width=350)
-        self.entry_dur.pack(pady=10)
-
-        # Selector de Tipo (Fuerza o Cardio)
-        self.tipo_entreno_var = ctk.StringVar(value="Fuerza")
-        self.menu_tipo = ctk.CTkOptionMenu(self.tab_entreno, values=["Fuerza", "Cardio"],
-                                           variable=self.tipo_entreno_var,
-                                           command=self.ui_alternar_campos_entreno, width=350)
-        self.menu_tipo.pack(pady=10)
-
-        # Frames para campos específicos
-        self.frame_fuerza = ctk.CTkFrame(self.tab_entreno, fg_color="transparent")
-        self.ent_peso_f = ctk.CTkEntry(self.frame_fuerza, placeholder_text="Peso total levantado (kg)", width=350)
-        self.ent_peso_f.pack(pady=5)
-        self.ent_reps_f = ctk.CTkEntry(self.frame_fuerza, placeholder_text="Repeticiones totales", width=350)
-        self.ent_reps_f.pack(pady=5)
-
-        self.frame_cardio = ctk.CTkFrame(self.tab_entreno, fg_color="transparent")
-        self.ent_dist_c = ctk.CTkEntry(self.frame_cardio, placeholder_text="Distancia total (km)", width=350)
-        self.ent_dist_c.pack(pady=5)
-
-        # Inicialmente mostramos Fuerza
-        self.frame_fuerza.pack()
-
-        ctk.CTkButton(self.tab_entreno, text="Guardar Entrenamiento", command=self.ui_registrar_entreno).pack(pady=20)
-        self.lbl_status_entreno = ctk.CTkLabel(self.tab_entreno, text="")
-        self.lbl_status_entreno.pack()
-
-    def ui_alternar_campos_entreno(self, seleccion):
-        if seleccion == "Fuerza":
-            self.frame_cardio.pack_forget()
-            self.frame_fuerza.pack()
-        else:
-            self.frame_fuerza.pack_forget()
-            self.frame_cardio.pack()
-
-    def ui_registrar_entreno(self):
-        try:
-            tipo = self.tipo_entreno_var.get()
-            fecha = date.today().strftime("%Y-%m-%d")
-            duracion = int(self.entry_dur.get())
-            id_e = len(self.gym._historial_sesiones) + 100
-
-            if tipo == "Fuerza":
-                peso_l = float(self.ent_peso_f.get())
-                reps = int(self.ent_reps_f.get())
-                # Polimorfismo: Creamos objeto de Fuerza
-                entreno = EntrenamientoFuerza(fecha, duracion, peso_l, reps, id_e)
-            else:
-                dist = float(self.ent_dist_c.get())
-                ritmo = Ritmo(5, 45)  # Ritmo genérico para la prueba
-                # Polimorfismo: Creamos objeto de Cardio
-                entreno = EntrenamientoCardio(fecha, duracion, dist, ritmo, id_e)
-
-            self.gym.registrar_entrenamiento(entreno)
-            rend = entreno.calcular_rendimiento()
-
-            self.lbl_status_entreno.configure(text=f"✅ Guardado. Rendimiento: {rend}", text_color="green")
-        except ValueError:
-            self.lbl_status_entreno.configure(text="❌ Error: Verifica los datos numéricos", text_color="red")
-
-    # ==========================================
-    # SECCIÓN: RESUMEN E IMC (Opción 3)
-    # ==========================================
-    def crear_interfaz_resumen(self):
-        self.txt_resumen = ctk.CTkTextbox(self.tab_resumen, width=550, height=400, font=("Consolas", 13))
-        self.txt_resumen.pack(pady=20, padx=20)
-
-        ctk.CTkButton(self.tab_resumen, text="Actualizar Listado", command=self.ui_actualizar_resumen).pack(pady=10)
-        self.ui_actualizar_resumen()
-
-    def ui_actualizar_resumen(self):
-        self.txt_resumen.delete("0.0", "end")
-        self.txt_resumen.insert("end", "--- RESUMEN DE PROGRESO DE ATLETAS ---\n\n")
-
-        atletas = self.atletismo.obtener_todos()
-        if not atletas:
-            self.txt_resumen.insert("end", "No hay atletas registrados actualmente.")
-        else:
-            for a in atletas:
-                imc = self.atletismo.calcular_imc_atleta(a)
-                self.txt_resumen.insert("end", f"👤 Atleta: {a._nombre}\n")
-                self.txt_resumen.insert("end", f"   Peso: {a._peso}kg | IMC: {imc}\n")
-                self.txt_resumen.insert("end", "-" * 40 + "\n")
-
-            self.txt_resumen.insert("end", f"\n{self.atletismo.obtener_resumen_atleta()}")
-
-    # ==========================================
-    # CIERRE Y PERSISTENCIA (Opción 4)
-    # ==========================================
-    def finalizar_y_guardar(self):
-        """Método para asegurar que los datos se guardan antes de salir[cite: 13, 14]"""
-        print("Persistiendo datos en disco...")
-        self.atletismo.guardar_estado()
+    def guardar_datos(self):
+        self.atletismo.guardar_estado();
         self.gym.guardar_estado()
-        self.destroy()
+        messagebox.showinfo("Persistencia", "Toda la información ha sido salvada en archivos binarios.")
 
 
 if __name__ == "__main__":
-    app = AppGestionDeportiva()
-    app.mainloop()
+    AppFitnessPro_UA().mainloop()
