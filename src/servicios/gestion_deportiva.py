@@ -1,5 +1,5 @@
-from entidades.deportista import Deportista
-from entidades.entrenamiento import Entrenamiento, EntrenamientoFuerza, EntrenamientoCardio
+from src.entidades.deportista import Deportista
+from src.entidades.entrenamiento import Entrenamiento, EntrenamientoFuerza, EntrenamientoCardio
 
 
 class GestionDeportiva:

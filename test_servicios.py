@@ -1,4 +1,4 @@
-# test_servicios.py (Ubicado en la raíz del proyecto)
+# test_servicios.py
 
 from src.servicios.gestion_deportiva import GestionDeportiva
 from src.entidades.entrenamiento import EntrenamientoFuerza, EntrenamientoCardio
