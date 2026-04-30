@@ -27,7 +27,7 @@ class GestionAtletas:
         os.makedirs("data", exist_ok=True)
         ManejadorArchivos.guardar_binario("data/atletas.pkl", self._atletas)
 
-    # --- TU CÓDIGO ORIGINAL (Intacto) ---
+
     def registrar_atleta(self, nombre: str, peso: float, altura: float) -> Deportista:
         nuevo = Deportista(nombre, peso, altura)
         self._atletas.append(nuevo)
