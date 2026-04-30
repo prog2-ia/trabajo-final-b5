@@ -1,3 +1,4 @@
+from datetime import date
 class Objetivo:
     """Representa una meta física a alcanzar en una fecha determinada"""
     def __init__(self, tipo_meta: str, valor_objetivo: float, fecha_limite: date):

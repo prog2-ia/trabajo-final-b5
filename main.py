@@ -1,21 +1,10 @@
 import customtkinter as ctk
 from datetime import date
-
-# Importación de la Capa de Servicios
 from src.servicios.gestion_atletas import GestionAtletas
-
-[cite: 10]
 from src.servicios.gestion_entrenamientos import GestionEntrenamientos
-
-[cite: 11]
-
-# Importación de Entidades necesarias para la creación de objetos
 from src.entidades.entrenamiento import EntrenamientoFuerza, EntrenamientoCardio
-
-[cite: 3]
 from src.entidades.ritmo import Ritmo
 
-[cite: 8]
 
 # --- CONFIGURACIÓN GLOBAL DE LA UI ---
 ctk.set_appearance_mode("dark")  # Modo oscuro por defecto
