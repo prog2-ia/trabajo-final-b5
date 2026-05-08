@@ -6,6 +6,10 @@ from src.entidades.recordpersonal import RecordPersonal
 from src.entidades.ejercicio import Ejercicio
 from src.persistencia.manejador_archivos import ManejadorArchivos
 
+
+from src.excepciones.excepciones_servicios import AtletaYaRegistradoException, CalculoImcException
+
+
 class GestionAtletas:
     """Servicio para gestionar el perfil, metas y récords del usuario"""
 
@@ -14,7 +18,6 @@ class GestionAtletas:
         self._historial_medidas = []
         self._metas = []
         self._records = []
-
 
     def cargar_estado(self):
         """Carga los datos guardados al iniciar el programa"""
@@ -27,8 +30,12 @@ class GestionAtletas:
         os.makedirs("data", exist_ok=True)
         ManejadorArchivos.guardar_binario("data/atletas.pkl", self._atletas)
 
-
     def registrar_atleta(self, nombre: str, peso: float, altura: float) -> Deportista:
+
+        for atleta in self._atletas:
+            if atleta._nombre.lower() == nombre.lower():
+                raise AtletaYaRegistradoException(f"El atleta '{nombre}' ya se encuentra registrado en el sistema.")
+
         nuevo = Deportista(nombre, peso, altura)
         self._atletas.append(nuevo)
         return nuevo
@@ -46,12 +53,12 @@ class GestionAtletas:
     def obtener_resumen_atleta(self) -> str:
         return f"Metas activas: {len(self._metas)} | Récords: {len(self._records)}"
 
-
     def obtener_todos(self) -> list:
         return self._atletas
 
     def calcular_imc_atleta(self, atleta: Deportista) -> float:
-        """Calcula el Índice de Masa Corporal"""
-        if atleta._altura > 0:
-            return round(atleta._peso / (atleta._altura ** 2), 2)
-        return 0.0
+        """Calcula el Índice de Masa Corporal de forma segura"""
+        if atleta._altura <= 0:
+
+            raise CalculoImcException("No se puede calcular el IMC porque la altura es cero o negativa.")
+        return round(atleta._peso / (atleta._altura ** 2), 2)

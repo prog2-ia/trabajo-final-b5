@@ -6,6 +6,10 @@ from src.entidades.serie import Serie
 from src.entidades.ritmo import Ritmo
 from src.persistencia.manejador_archivos import ManejadorArchivos
 
+
+from src.excepciones.excepciones_servicios import EjercicioDuplicadoException, SesionInvalidaException
+
+
 class GestionEntrenamientos:
     """Servicio para gestionar la actividad física y la planificación"""
 
@@ -13,7 +17,6 @@ class GestionEntrenamientos:
         self._ejercicios_disponibles = []
         self._historial_sesiones = []
         self._planes = []
-
 
     def cargar_estado(self):
         """Carga los entrenamientos guardados"""
@@ -26,13 +29,20 @@ class GestionEntrenamientos:
         os.makedirs("data", exist_ok=True)
         ManejadorArchivos.guardar_binario("data/sesiones.pkl", self._historial_sesiones)
 
-
     def crear_ejercicio(self, nombre: str, grupo: str, desc: str) -> Ejercicio:
+
+        for ej in self._ejercicios_disponibles:
+            if ej.nombre.lower() == nombre.lower():
+                raise EjercicioDuplicadoException(f"El ejercicio '{nombre}' ya está disponible en el catálogo.")
+
         nuevo = Ejercicio(nombre, grupo, desc)
         self._ejercicios_disponibles.append(nuevo)
         return nuevo
 
     def registrar_entrenamiento(self, sesion: Entrenamiento) -> None:
+
+        if sesion is None:
+            raise SesionInvalidaException("Intento de registrar una sesión vacía o nula.")
         self._historial_sesiones.append(sesion)
 
     def programar_semana(self, dias: list, entrenos: list) -> None:
