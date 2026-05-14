@@ -1,19 +1,18 @@
-# Updated README content based on conversation and provided files
-readme_content = """# 🏋️‍♂️ UA Fitness Pro - Gestor de Rendimiento Deportivo
 
-##  Descripción del Proyecto
+
+## 📖 Descripción del Proyecto
 Este proyecto es una aplicación de escritorio avanzada con Interfaz Gráfica de Usuario (GUI) desarrollada en Python para la asignatura de **Programación II** del Grado en Inteligencia Artificial en la **Universidad de Alicante**.
 
 Su objetivo es proporcionar a los entrenadores y deportistas una herramienta profesional para registrar entrenamientos (Fuerza y Cardio), realizar un seguimiento evolutivo de la biometría (IMC, Peso, Grasa), establecer un plan semanal y visualizar el progreso general a través de un ranking de rendimiento.
 
-##  Integrantes del Equipo
+## 👥 Integrantes del Equipo
 * **Integrante 1**: Óscar Marco Albertos
 * **Integrante 2**: Miguel Vicente Mollá
 * **Grupo**: B5
 
 ---
 
-## 🏗 Arquitectura del Sistema
+## 🏗️ Arquitectura del Sistema
 El sistema sigue una **arquitectura profesional de 4 capas** estructurada mediante Programación Orientada a Objetos (POO), garantizando modularidad, encapsulamiento y alta cohesión:
 
 1.  **Capa de Entidades (`src/entidades/`)**: Clases puras del dominio como `Deportista`, `Entrenamiento`, `Serie`, `Ritmo`, `Objetivo`, `PlanSemanal`, `MediaCorporal` y `RecordPersonal`. Implementan herencia y polimorfismo.
@@ -21,7 +20,7 @@ El sistema sigue una **arquitectura profesional de 4 capas** estructurada median
 3.  **Capa de Persistencia (`src/persistencia/`)**: Manejo de datos mediante `manejador_archivos.py`, utilizando ficheros CSV y serialización binaria con Pickle para la preservación de objetos complejos.
 4.  **Capa de Presentación / UI**: Interfaz gráfica moderna construida con la librería `customtkinter`.
 
-### 🛡 Sistema de Excepciones
+### 🛡️ Sistema de Excepciones
 El proyecto implementa una jerarquía completa de excepciones personalizadas para garantizar la estabilidad del software, siguiendo las convenciones del Tema 09 (PascalCase acabado en Exception):
 * **Persistencia**: `PersistenciaException`, `ArchivoCorruptoException`.
 * **Servicios**: `AtletaYaRegistradoException`, `CalculoImcException`, `SesionInvalidaException`.
@@ -29,7 +28,7 @@ El proyecto implementa una jerarquía completa de excepciones personalizadas par
 
 ---
 
-## ⚙ Guía de Instalación y Ejecución Detallada
+## ⚙️ Guía de Instalación y Ejecución Detallada
 
 Siga estos pasos exactamente para poner en marcha la aplicación. Se recomienda usar **Python 3.10** o superior.
 
@@ -85,7 +84,7 @@ Descargue o clone el repositorio en una carpeta de su elección.
 
 ---
 
-##  Uso de la Aplicación
+## 🚀 Uso de la Aplicación
 1.  **Directorio**: Registre nuevos atletas en la pestaña inicial. Se validará automáticamente que no haya nombres duplicados.
 2.  **Expediente del Atleta**: Haga clic en "Gestionar Perfil" para acceder a:
     * **Planificación**: Horario semanal interactivo para definir rutinas.
