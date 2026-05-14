@@ -1,35 +1,96 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/09uckVan)
-# Gestor de Entrenamientos y Rendimiento 
+# Updated README content based on conversation and provided files
+readme_content = """# 🏋️‍♂️ UA Fitness Pro - Gestor de Rendimiento Deportivo
 
-## Descripción del Proyecto
-Este proyecto es una aplicación de consola desarrollada en Python para la asignatura de **Programación II** del Grado en IA en la **Universidad de Alicante**. Su objetivo es permitir a deportistas registrar sus entrenamientos (Fuerza y Cardio), realizar un seguimiento de sus medidas corporales y visualizar su progreso hacia metas específicas.
+##  Descripción del Proyecto
+Este proyecto es una aplicación de escritorio avanzada con Interfaz Gráfica de Usuario (GUI) desarrollada en Python para la asignatura de **Programación II** del Grado en Inteligencia Artificial en la **Universidad de Alicante**.
 
-## Integrantes del Equipo
+Su objetivo es proporcionar a los entrenadores y deportistas una herramienta profesional para registrar entrenamientos (Fuerza y Cardio), realizar un seguimiento evolutivo de la biometría (IMC, Peso, Grasa), establecer un plan semanal y visualizar el progreso general a través de un ranking de rendimiento.
+
+##  Integrantes del Equipo
 * **Integrante 1**: Óscar Marco Albertos
 * **Integrante 2**: Miguel Vicente Mollá
 * **Grupo**: B5
 
-## Arquitectura del Sistema
-El sistema sigue una arquitectura profesional de 4 capas para garantizar la separación de responsabilidades:
-1. **Entidades**: Clases puras que representan el dominio (Deportista, Entrenamiento, etc.).
-2. **Servicios**: Lógica de negocio y cálculos de rendimiento.
-3. **Persistencia**: Manejo de datos mediante ficheros CSV y Binarios (Pickle).
-4. **UI**: Interfaz de usuario mediante menús interactivos por consola.
+---
 
-## Requisitos e Instalación
-Para ejecutar este proyecto, es necesario tener instalado Python 3.12.3 y seguir estos pasos:
+## 🏗 Arquitectura del Sistema
+El sistema sigue una **arquitectura profesional de 4 capas** estructurada mediante Programación Orientada a Objetos (POO), garantizando modularidad, encapsulamiento y alta cohesión:
 
-1. **Clonar el repositorio**:
-   git clone [https://github.com/prog2-ia/trabajo-final-b5.git](https://github.com/prog2-ia/trabajo-final-b5.git)
-   cd trabajo-final-b5
+1.  **Capa de Entidades (`src/entidades/`)**: Clases puras del dominio como `Deportista`, `Entrenamiento`, `Serie`, `Ritmo`, `Objetivo`, `PlanSemanal`, `MediaCorporal` y `RecordPersonal`. Implementan herencia y polimorfismo.
+2.  **Capa de Servicios (`src/servicios/`)**: Controladores lógicos como `GestionAtletas` y `GestionEntrenamientos` que manejan la lógica de negocio y cálculos de rendimiento.
+3.  **Capa de Persistencia (`src/persistencia/`)**: Manejo de datos mediante `manejador_archivos.py`, utilizando ficheros CSV y serialización binaria con Pickle para la preservación de objetos complejos.
+4.  **Capa de Presentación / UI**: Interfaz gráfica moderna construida con la librería `customtkinter`.
 
-2. **Crear y activar el entorno virtual (venv)**:
- Windows: python -m venv venv y .\venv\Scripts\activate
- Linux/macOS: python -m venv venv y source venv/bin/activate
+### 🛡 Sistema de Excepciones
+El proyecto implementa una jerarquía completa de excepciones personalizadas para garantizar la estabilidad del software, siguiendo las convenciones del Tema 09 (PascalCase acabado en Exception):
+* **Persistencia**: `PersistenciaException`, `ArchivoCorruptoException`.
+* **Servicios**: `AtletaYaRegistradoException`, `CalculoImcException`, `SesionInvalidaException`.
+* **Entidades**: `ValorFisicoInvalidoException`, `PlanSemanalIncoherenteException`.
 
-3. **Instalar dependencias**:
- pip install -r requirements.txt
+---
 
-## Uso
-Para iniciar el gestor de entrenamientos, ejecuta el script principal desde la raíz del proyecto:
-python main.py
+## ⚙ Guía de Instalación y Ejecución Detallada
+
+Siga estos pasos exactamente para poner en marcha la aplicación. Se recomienda usar **Python 3.10** o superior.
+
+### 🔹 Paso 1: Descarga del Proyecto
+Descargue o clone el repositorio en una carpeta de su elección.
+
+### 🔹 Paso 2: Ejecución en Windows (PowerShell)
+1.  Abra el menú de inicio, escriba **PowerShell** y ábralo.
+2.  Navegue hasta la carpeta del proyecto usando el comando `cd`:
+    ```powershell
+    cd C:\\ruta\\a\\la\\carpeta\\del\\proyecto
+    ```
+3.  Cree el entorno virtual para aislar las librerías:
+    ```powershell
+    python -m venv venv
+    ```
+4.  Active el entorno virtual:
+    ```powershell
+    .\\venv\\Scripts\\Activate.ps1
+    ```
+    *Si recibe un error de "políticas de ejecución", escriba: `Set-ExecutionPolicy Unrestricted -Scope CurrentUser` y pulse Enter.*
+5.  Instale las librerías necesarias:
+    ```powershell
+    pip install -r requirements.txt
+    ```
+6.  Inicie la aplicación:
+    ```powershell
+    python main.py
+    ```
+
+### 🔹 Paso 3: Ejecución en Linux (Terminal)
+1.  Abra su terminal favorita.
+2.  Navegue hasta la carpeta del proyecto:
+    ```bash
+    cd /ruta/al/proyecto
+    ```
+3.  Cree el entorno virtual:
+    ```bash
+    python3 -m venv venv
+    ```
+4.  Active el entorno virtual:
+    ```bash
+    source venv/bin/activate
+    ```
+5.  Instale las librerías necesarias:
+    ```bash
+    pip install -r requirements.txt
+    ```
+6.  Inicie la aplicación:
+    ```bash
+    python3 main.py
+    ```
+
+---
+
+##  Uso de la Aplicación
+1.  **Directorio**: Registre nuevos atletas en la pestaña inicial. Se validará automáticamente que no haya nombres duplicados.
+2.  **Expediente del Atleta**: Haga clic en "Gestionar Perfil" para acceder a:
+    * **Planificación**: Horario semanal interactivo para definir rutinas.
+    * **Diario de Cargas**: Registro de series (peso/repeticiones) que calcula el volumen de entreno.
+    * **Biometría**: Gráficas automáticas de evolución de peso y grasa corporal.
+3.  **Ranking**: Visualice quién lidera el rendimiento acumulado en base a los entrenamientos registrados.
+4.  **Guardado**: Todos los datos se sincronizan automáticamente en ficheros binarios dentro de la carpeta `data/` al cerrar el programa.
+"""
