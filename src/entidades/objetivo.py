@@ -1,5 +1,5 @@
 from datetime import date
-from src.excepciones.excepciones_entidades import FechaPasadaException, AtributoVacioException
+from  src.entidades.excepciones_entidades import FechaPasadaException, AtributoVacioException
 
 
 class Objetivo:

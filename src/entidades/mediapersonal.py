@@ -1,4 +1,4 @@
-from src.excepciones.excepciones_entidades import PorcentajeInvalidoException, ValorFisicoInvalidoException
+from src.entidades.excepciones_entidades import PorcentajeInvalidoException, ValorFisicoInvalidoException
 
 
 class MediaCorporal:

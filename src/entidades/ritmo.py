@@ -1,4 +1,4 @@
-from src.excepciones.excepciones_entidades import FormatoRitmoException
+from src.entidades.excepciones_entidades import FormatoRitmoException
 
 
 class Ritmo:

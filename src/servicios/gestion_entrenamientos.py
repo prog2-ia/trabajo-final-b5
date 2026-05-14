@@ -7,7 +7,7 @@ from src.entidades.ritmo import Ritmo
 from src.persistencia.manejador_archivos import ManejadorArchivos
 
 
-from src.excepciones.excepciones_servicios import EjercicioDuplicadoException, SesionInvalidaException
+from src.servicios.excepciones_servicios import EjercicioDuplicadoException, SesionInvalidaException
 
 
 class GestionEntrenamientos:
