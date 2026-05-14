@@ -7,7 +7,7 @@ from src.entidades.ejercicio import Ejercicio
 from src.persistencia.manejador_archivos import ManejadorArchivos
 
 
-from src.excepciones.excepciones_servicios import AtletaYaRegistradoException, CalculoImcException
+from src.servicios.excepciones_servicios import AtletaYaRegistradoException, CalculoImcException
 
 
 class GestionAtletas:

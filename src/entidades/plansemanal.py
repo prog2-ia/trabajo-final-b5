@@ -1,4 +1,4 @@
-from src.excepciones.excepciones_entidades import PlanSemanalIncoherenteException
+from src.entidades.excepciones_entidades import PlanSemanalIncoherenteException
 
 
 class PlanSemanal:

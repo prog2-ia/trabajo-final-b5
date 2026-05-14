@@ -1,7 +1,7 @@
 import csv
 import pickle
 import os
-from src.excepciones.personalizadas import PersistenciaException, ArchivoCorruptoException
+from src.persistencia.excepciones_persistencia import PersistenciaException, ArchivoCorruptoException
 class ManejadorArchivos:
     """Clase de utilidad para leer y escribir datos en disco (CSV y Pickle) """
 
