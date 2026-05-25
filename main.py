@@ -150,12 +150,6 @@ class UAFitnessCoachApp(ctk.CTk):
         hoy_real = dias_es.get(date.today().strftime("%A").lower(), "Lunes")
         self.dia_simulado_var = ctk.StringVar(value=hoy_real)
 
-        self.top_bar = ctk.CTkFrame(self, fg_color="#1A5276", height=45, corner_radius=0)
-        self.top_bar.pack(fill="x", side="top")
-        ctk.CTkLabel(self.top_bar, text="🗓 Cambiar día actual:", font=("Arial", 14, "bold"), text_color="white").pack(side="left", padx=20)
-        seg_dias = ctk.CTkSegmentedButton(self.top_bar, values=self.dias_semana, variable=self.dia_simulado_var, command=self._al_cambiar_dia)
-        seg_dias.pack(side="left", pady=8)
-
         try:
             self.atletismo.cargar_estado()
             self.gym.cargar_estado()
