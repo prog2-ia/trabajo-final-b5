@@ -88,8 +88,8 @@ Descargue o clone el repositorio en una carpeta de su elección.
     ```
 2. En Linux es necesario dar permisos de ejecución al fichero antes de abrirlo por primera vez. Esto es un requisito del sistema operativo Linux:
 ```bash
-chmod +x dist/UAFitnessCoach
-./dist/UAFitnessCoach
+chmod +x UAFitnessCoach
+./UAFitnessCoach
  ```
 A partir de ese momento, el ejecutable puede abrirse directamente sin repetir el chmod +x.
 
