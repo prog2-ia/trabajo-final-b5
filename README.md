@@ -82,7 +82,11 @@ Descargue o clone el repositorio en una carpeta de su elección.
     python3 main.py
     ```
 ### 🔹 Paso 4: Ejecutable
-En Linux es necesario dar permisos de ejecución al fichero antes de abrirlo por primera vez. Esto es un requisito del sistema operativo Linux:
+1.  Navegue hasta el ejecutable:
+    ```bash
+    cd /ruta/al/ejecutable
+    ```
+2. En Linux es necesario dar permisos de ejecución al fichero antes de abrirlo por primera vez. Esto es un requisito del sistema operativo Linux:
 ```bash
 chmod +x dist/UAFitnessCoach
 ./dist/UAFitnessCoach
